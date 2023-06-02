@@ -57,21 +57,57 @@ def search_player_by_name(una_lista:list):
     name = input("Ingrese el nombre del jugador:\n")
     pattern = r".*" + name + r".*"
     for player in una_lista:
-        if re.search(pattern, player["nombre"]):
-            player_name_list.append(player["logros"])
-    print(player_name_list)
+        if re.search(pattern, player["nombre"], re.IGNORECASE):
+            player_name_list.append(player)
     return player_name_list
 
-# def search_player_by_name_hall_of_fame(una_lista:list):
-#     player_name_list = []
-#     name = input("Ingrese el nombre del jugador:\n")
-#     pattern = r".*" + name + r".*"
-#     for player in una_lista:
-#         if re.search(pattern, player["nombre"]):
-#             if player["logros"] == "Miembro del Salon de la Fama del Baloncesto":
-#                 player_name_list.append(player["logros"])
-#     print(player_name_list)
-#     return player_name_list
+def show_player_prizes(una_lista:list):
+    player_prizes = search_player_by_name(una_lista)
+    for player in player_prizes:
+        print("\n{}".format(player["nombre"]))
+        prizes = player["logros"]
+        for prize in prizes:
+           print(prize)
+
+def quick_sort (lista:list, clave )->list:
+    lista_izquierda = []
+    lista_derecha = []
+    if (len(lista) <= 1):
+        return lista
+    else:
+        pivote = lista[0][clave]
+        for elemento in lista[1:]:
+            if elemento[clave] > pivote:
+                lista_derecha.append(elemento)
+            else:
+                lista_izquierda.append(elemento)
+    lista_izquierda = quick_sort(lista_izquierda, clave)
+    lista_izquierda.append(lista[0])
+    lista_derecha = quick_sort(lista_derecha, clave)
+    lista_izquierda.extend(lista_derecha)
+    return lista_izquierda
+
+def calculate_and_show_average_ppg_sort(una_lista:list):
+    player_ppg_list = []
+    for player in una_lista:
+        player_dict = {"nombre" : player["nombre"], "ppg" : player["estadisticas"]["promedio_puntos_por_partido"]}
+        player_ppg_list.append(player_dict) 
+    for player in player_ppg_list:
+        print(player)
+    sort_key = "nombre"
+    print("\n\n")
+    player_list_sort = quick_sort(player_ppg_list, sort_key)
+    for player in player_list_sort:
+        print("Nombre: {0} - Promedio puntos por partido: {1}".format(player["nombre"], player["ppg"]))
+    print("\n\n")
+
+def search_player_by_name_hall_of_fame(una_lista:list):
+    hall_of_fame_list = search_player_by_name(una_lista)
+    for player in hall_of_fame_list:
+        if "Miembro del Salon de la Fama del Baloncesto" in player["logros"]:
+               print("Nombre: {0} es Miembro del Salon de la Fama del Baloncesto".format(player["nombre"]))
+        else:
+            print("\nNo pertenece al salon de la fama\n")
 
 def calculate_and_show_most_rebounds(una_lista:list):
     max_rebounds = una_lista[0]["estadisticas"]["rebotes_totales"]
@@ -203,4 +239,16 @@ def show_players_3points_shooting_percentage_comparison(una_lista:list):
         if player["estadisticas"]["porcentaje_tiros_triples"] > comparison:
             players.append(player["nombre"])
     for player in players:
+        print(player)
+
+def show_players_field_goals_comparison(una_lista:list):
+    comparison = int(input("Por favor ingrese un porcentaje de tiros de campo por partido:\n"))
+    print("Porcentaje de tiros de campo a comparar\n", comparison)
+    players = []
+    for player in una_lista:
+        if player["estadisticas"]["porcentaje_tiros_de_campo"] > comparison:
+            players.append(player["nombre"])
+    key = "posicion"
+    sort_list = quick_sort(players, key)
+    for player in sort_list:
         print(player)

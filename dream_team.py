@@ -27,7 +27,8 @@ while(finish):
                         "18-Ingresar un valor y mostrar los jugadores que hayan tenido un porcentaje de tiros triples superior a ese valor.\n"
                         "19-Calcular y mostrar el jugador con la mayor cantidad de temporadas jugadas.\n"
                         "20-Ingresar un valor y mostrar los jugadores , ordenados por posición en la cancha, que hayan tenido un porcentaje de tiros de campo superior a ese valor.\n"
-                        "21-Salir del programa"))
+                        "21-Salir del programa.\n\n"
+                        "Opcion: "))
      
     match(answer):
         case 1:
@@ -44,11 +45,11 @@ while(finish):
                 generate_player_csv("jugador.csv", player_list, answer_player)
                 print("\nEl archivo CSV del jugador elegido fue generado correctamente\n")        
         case 4:
-            search_player_by_name(player_list)
+            show_player_prizes(player_list)
         case 5:
-            pass
+            calculate_and_show_average_ppg_sort(player_list)
         case 6:
-            pass
+            search_player_by_name_hall_of_fame(player_list)
         case 7:
             calculate_and_show_most_rebounds(player_list)
         case 8:
@@ -76,7 +77,9 @@ while(finish):
         case 19:
             calculate_and_show_most_seasons(player_list)
         case 20:
+            show_players_field_goals_comparison(player_list)
+        case 23:
             pass
-        case 21:
+        case 24:
             finish = False
             print("\n***** Usted ha salido del programa *****\n")
