@@ -69,7 +69,7 @@ def show_player_prizes(una_lista:list):
         for prize in prizes:
            print(prize)
 
-def quick_sort (lista:list, clave )->list:
+def quick_sort (lista:list, clave:any, orden:bool)->list:
     lista_izquierda = []
     lista_derecha = []
     if (len(lista) <= 1):
@@ -77,13 +77,13 @@ def quick_sort (lista:list, clave )->list:
     else:
         pivote = lista[0][clave]
         for elemento in lista[1:]:
-            if elemento[clave] > pivote:
+            if (orden and elemento[clave] > pivote) or (not orden and elemento[clave] < pivote):
                 lista_derecha.append(elemento)
             else:
                 lista_izquierda.append(elemento)
-    lista_izquierda = quick_sort(lista_izquierda, clave)
+    lista_izquierda = quick_sort(lista_izquierda, clave, orden)
     lista_izquierda.append(lista[0])
-    lista_derecha = quick_sort(lista_derecha, clave)
+    lista_derecha = quick_sort(lista_derecha, clave, orden)
     lista_izquierda.extend(lista_derecha)
     return lista_izquierda
 
@@ -92,14 +92,10 @@ def calculate_and_show_average_ppg_sort(una_lista:list):
     for player in una_lista:
         player_dict = {"nombre" : player["nombre"], "ppg" : player["estadisticas"]["promedio_puntos_por_partido"]}
         player_ppg_list.append(player_dict) 
-    for player in player_ppg_list:
-        print(player)
     sort_key = "nombre"
-    print("\n\n")
     player_list_sort = quick_sort(player_ppg_list, sort_key)
     for player in player_list_sort:
         print("Nombre: {0} - Promedio puntos por partido: {1}".format(player["nombre"], player["ppg"]))
-    print("\n\n")
 
 def search_player_by_name_hall_of_fame(una_lista:list):
     hall_of_fame_list = search_player_by_name(una_lista)
@@ -253,3 +249,94 @@ def show_players_field_goals_comparison(una_lista:list):
     sort_list = quick_sort(players, key)
     for player in sort_list:
         print("Nombre: {0} - Posicion: {1} - Tiros de campo: {2}".format(player["nombre"], player["posicion"], player["tiros de campo"]))
+
+#Determinar la cantidad de jugadores que hay por cada posición.
+def position_quantity(una_lista:list):
+    #position_list = []
+    ala_pivot = 0
+    alero = 0
+    base = 0
+    escolta = 0
+    pivot = 0
+
+    for player in una_lista:
+        if player["posicion"] == "Ala-Pivot":
+            ala_pivot = ala_pivot + 1
+        elif player["posicion"] == "Alero":
+            alero = alero + 1
+        elif player["posicion"] == "Base":
+            base = base + 1
+        elif player["posicion"] == "Escolta":
+            escolta = escolta + 1
+        elif player["posicion"] == "Pivot":
+            pivot = pivot + 1
+    
+    print("Cantidad de jugadores por posicion:\nAla-Pivot: {0}\nAlero: {1}\nBase: {2}\nEscolta: {3}\nPivot: {4}".format(ala_pivot, alero, base, escolta, pivot))
+            
+#Calcular de cada jugador cuál es su posición en cada uno de los siguientes ranking: (Exportar a CSV)
+#Puntos - Rebotes - Asistencias - Robos"
+
+# ranking_puntos = []
+# ranking_rebotes = []
+# ranking_asistencias = []
+# ranking_robos = []
+# for player in una_lista:
+#     puntos = 0
+#     if player["estadisticas"]["puntos_totales"] > 0:
+
+def generate_ranking_csv(file_name:str, una_lista:list, dos_lista:list, tres_lista:list, cuatro_lista:list):
+    with open(file_name, "w") as file:
+        text_ranking = "NOMBRE\tPUNTOS TOTALES\tREBOTES TOTALES\tASISTENCIAS TOTALES\tROBOS TOTALES\n"
+        for linea in una_lista:
+            text = "\n{0},{1}\n".format(linea["nombre"], linea["puntos_totales"]), #linea["rebotes"], linea["asistencias"], linea["robos"])
+                  
+        file.write(text_ranking)
+        file.write(text)
+
+def position_in_ranking(una_lista:list):
+    point_list = []
+    rebounds_list = []
+    assists_list = []
+    robbery_list = []
+    for player in una_lista:
+        new_dict = {"nombre" : player["nombre"], "puntos_totales" : player["estadisticas"]["puntos_totales"]}
+        point_list.append(new_dict)
+        new_dict_rebounds = {"nombre" : player["nombre"], "rebotes" : player["estadisticas"]["rebotes_totales"]}
+        rebounds_list.append(new_dict_rebounds)
+        new_dict_assists = {"nombre" : player["nombre"], "asistencias" : player["estadisticas"]["asistencias_totales"]}
+        assists_list.append(new_dict_assists)
+        new_dict_robbery = {"nombre" : player["nombre"], "robos" : player["estadisticas"]["robos_totales"]}
+        robbery_list.append(new_dict_robbery)
+    key = "puntos_totales"
+    key_rebounds = "rebotes"
+    key_assists = "asistencias"
+    key_robbery = "robos"
+    new_sort_list = quick_sort(point_list, key, False)
+    new_rebounds_list = quick_sort(rebounds_list, key_rebounds, False)
+    new_assists_list = quick_sort(assists_list, key_assists, False)
+    new_robbery_list = quick_sort(robbery_list, key_robbery, False)
+    for index, player in enumerate(new_sort_list):
+        print("Nombre: {0} Posicion: {1}".format(player["nombre"], index+1))
+    print("\n\n")
+    for index, player in enumerate(new_rebounds_list):
+        print("Nombre: {0} Posicion: {1}".format(player["nombre"], index+1))
+    print("\n\n")
+    for index, player in enumerate(new_assists_list):
+        print("Nombre: {0} Posicion: {1}".format(player["nombre"], index+1))
+    print("\n\n")
+    for index, player in enumerate(new_robbery_list):
+        print("Nombre: {0} Posicion: {1}".format(player["nombre"], index+1))
+    print("\n\n")
+
+    generate_ranking_csv("ranking", new_sort_list, new_dict_rebounds, new_dict_assists, new_dict_robbery)
+
+# Mostrar la lista de jugadores ordenadas por la cantidad de All-Star de forma descendente.
+# La salida por pantalla debe tener un formato similar a este:
+#Michael Jordan (14 veces All Star)
+#Magic Johnson (12 veces All-Star)
+
+#Determinar qué jugador tiene las mejores estadísticas en cada valor. La salida por pantalla debe tener un formato similar a este:
+#Mayor cantidad de temporadas: Karl Malone (19)
+#Mayor cantidad de puntos totales: Karl Malon (36928)
+
+#Determinar qué jugador tiene las mejores estadísticas de todos.

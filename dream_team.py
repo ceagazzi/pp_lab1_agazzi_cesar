@@ -27,8 +27,10 @@ while(finish):
                         "18-Ingresar un valor y mostrar los jugadores que hayan tenido un porcentaje de tiros triples superior a ese valor.\n"
                         "19-Calcular y mostrar el jugador con la mayor cantidad de temporadas jugadas.\n"
                         "20-Ingresar un valor y mostrar los jugadores , ordenados por posición en la cancha, que hayan tenido un porcentaje de tiros de campo superior a ese valor.\n"
-                        "21-Salir del programa.\n\n"
-                        "Opcion: "))
+                        "23-BONUS Calcular de cada jugador cuál es su posición en cada uno de los siguientes ranking: (Exportar a CSV)\n\tPuntos\n\tRebotes\n\tAsistencias\n\tRobos\n"
+                        "24-Determinar la cantidad de jugadores que hay por cada posición.\n"
+                        "25-Salir del programa.\n\n"
+                        "Opcion: \n"))
      
     match(answer):
         case 1:
@@ -79,7 +81,9 @@ while(finish):
         case 20:
             show_players_field_goals_comparison(player_list)
         case 23:
-            pass
+            position_in_ranking(player_list)
         case 24:
+            position_quantity(player_list)
+        case 25:
             finish = False
             print("\n***** Usted ha salido del programa *****\n")
