@@ -246,7 +246,7 @@ def show_players_field_goals_comparison(una_lista:list):
             player_dict = {"nombre" : player["nombre"], "posicion" : player["posicion"], "tiros de campo" : player["estadisticas"]["porcentaje_tiros_de_campo"]}
             players.append(player_dict)
     key = "posicion"
-    sort_list = quick_sort(players, key)
+    sort_list = quick_sort(players, key, True)
     for player in sort_list:
         print("Nombre: {0} - Posicion: {1} - Tiros de campo: {2}".format(player["nombre"], player["posicion"], player["tiros de campo"]))
 
